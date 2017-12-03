@@ -17,7 +17,12 @@
 
 ## getting up and running !
 
-Just run `docker-compose up -d` ...
+get the latest from the repo & run `docker-compose up -d`:
+```
+git clone git@github.com:shelleg/prometheus-stack.git
+cd prometheus-stack
+docker-compose up -d
+```
 
 Then a docker ps should yield something like:
 
