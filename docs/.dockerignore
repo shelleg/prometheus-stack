@@ -1,0 +1,4 @@
+.git*
+_book
+Dockerfile
+set_ip.sh
