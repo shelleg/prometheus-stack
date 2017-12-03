@@ -11,5 +11,5 @@
     * [nodejs](implementations/nodejs-sample.md)
     * [go](implementations/go-sample.md)
     * [python](implementations/python-sample.md)
-    * [libvirt exporter](link to stas git repo)
+    * [libvirt exporter](implementations/libvirt.md)
 * [TODO](TODO.md)
