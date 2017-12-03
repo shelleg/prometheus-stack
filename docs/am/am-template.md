@@ -3,7 +3,7 @@
 * A Custom slack template:
 
 ```
-{{ define "customAlertmanagerURL" }}http://{{ web.listen}}/#/alerts?receiver={{ .Receiver }}{{ end }}
+{{ define "customAlertmanagerURL" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}{{ end }}
 
 {{ define "slack.custom.text" }}
 {{ range .Alerts }}
