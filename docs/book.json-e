@@ -1,0 +1,15 @@
+{
+    "title": "Prometheus Demo",
+    "gitbook": ">=3.0.0",
+    "description": "This is a demo project for learning prometheus",
+    "variables": {
+        "prometheus_demo_hostname": "127.0.0.1",
+        "prometheus_demo_port": 9090,
+        "prometheus_am_port": 9093,
+        "prometheus_ne_port": 9100,
+        "grafana_port": 3000,
+        "mysql_exporter_port": 9104,
+        "mailhog_port": 8025,
+        "mailhog_smtp_port": 1025
+    }
+}
