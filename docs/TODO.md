@@ -4,13 +4,15 @@
 
 * run stack on docker swarm
 * run stack on kubernetes
-* run stack on *
+* run stack on \*
 
 ## graphing
+
 * auto-import grafana datasources
 * auto-import grafana dashbaords
 
 ## Application monitoring
+
 * Add pet clinic example for `java`
   * see what Chen Cohen did and containerize it
   * add it to Prometheus scrape targets
@@ -21,7 +23,7 @@
 
 ## Exporters
 
-* add cloud_watch Exporter
+* add cloud\_watch Exporter
 * add traefik Exporter
 * add jmx
 * more and more ...
@@ -31,3 +33,6 @@
 * long-term storage
   * cratedb
   * influxdb
+
+
+
