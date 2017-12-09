@@ -57,5 +57,3 @@ After running this code we can check in browser that metric is exposing on local
 
 ![](/assets/Exposing_metric_example.png)
 
-
-
