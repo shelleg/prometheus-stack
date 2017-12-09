@@ -15,7 +15,7 @@
     - 0.0.0.0:9177
 ```
 
-3rd add dashboard to grafana \(Grafana dashboard id: 3928\)
+3rd export dashboard to grafana by id \(Grafana dashboard id: 3928\)
 
 **Chapter of dashbord:**![](/assets/Screenshot from 2017-12-06 23-53-39.png)
 
