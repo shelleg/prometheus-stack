@@ -51,11 +51,11 @@ while True:
     # Setting metric and label values
     g.labels(*label_values).set(metric_value)
     time.sleep(5)
-
-
 ```
 
+After running this code we can check in browser that metric is exposing on localhost on port 1111
 
+![](/assets/Exposing_metric_example.png)
 
 
 
