@@ -24,5 +24,38 @@ Each exposing process consist from following 3 parts:
 
 Following simple example how to export uptime on linux machine:
 
+```
+import socket
+import time
+from prometheus_client import start_http_server, Gauge
+
+# Start exposing metrics on port 1111
+start_http_server(1111)
+
+#Initilization Gauge object and assignment to variable g
+g = Gauge('uptime_seconds', 'system uptime in seconds', ['hostname'])
+
+# Getting metric and label value
+def get_metric_label_values():
+    with open('/proc/uptime', 'r') as f:
+        uptime_seconds = int(float(f.readline().split()[0]))
+        metric_value = uptime_seconds
+
+    hostname = socket.gethostname()
+    label_values = [hostname]
+    return metric_value, label_values
+
+# Run infinity loop with time interval 5 seconds
+while True:
+    metric_value, label_values = get_metric_label_values()
+    # Setting metric and label values
+    g.labels(*label_values).set(metric_value)
+    time.sleep(5)
+
+
+```
+
+
+
 
 
