@@ -19,5 +19,3 @@
 
 **Chapter of dashbord:**![](/assets/Screenshot from 2017-12-06 23-53-39.png)
 
-
-
