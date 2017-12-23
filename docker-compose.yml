@@ -1,0 +1,131 @@
+version: '3.2'
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+services:
+  # we want documentation to be live ;) thus it depends on all other must components
+  prom-demo-docs:
+    build: docs/.
+    expose:
+      - 80
+    ports:
+      - 80:80
+    depends_on:
+      - prometheus
+      - alertmanager
+      - node-exporter
+      - grafana
+      - cadvisor
+
+  # main prometheus server
+  prometheus:
+    image: prom/prometheus:${PROMETHEUS_VERSION:-latest}
+    expose:
+      - 9090
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    depends_on:
+      - node-exporter
+      - alertmanager
+      - cadvisor
+      - mysql-exporter
+
+
+  # prometheus official node-exporter
+  node-exporter:
+    image: prom/node-exporter:${NODE_EXPORTER_VERSION:-latest}
+    expose:
+      - 9100
+    ports:
+      - 9100:9100
+    volumes:
+      - /proc:/host/proc
+      - /sys:/host/sys
+      - /:/rootfs
+      - ./.hostname:/etc/host_hostname
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--collector.textfile.directory=/etc/node-exporter/"
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    environment:
+      HOST_HOSTNAME: /etc/host_hostname
+
+  # prometheus alertmanager
+  alertmanager:
+    image: prom/alertmanager:${ALERTMANAGER_VERSION:-latest}
+    expose:
+      - 9093
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/
+    command:
+      - '-config.file=/etc/alertmanager/config.yml'
+      - '-storage.path=/alertmanager'
+      - '-log.level=debug'
+    depends_on:
+      - mailhog
+
+  # docker metrics
+  cadvisor:
+    image: google/cadvisor:${CADVISOR_VERSION:-latest}
+    expose:
+      - 8082
+    ports:
+      - 8082:8080
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+
+  # mysql metrics
+  # docker run -d -p 9104:9104 --link=my_mysql_container:bdd  -e DATA_SOURCE_NAME="user:password@(bdd:3306)/database" prom/mysqld-exporter
+  mysql-exporter:
+    image: prom/mysqld-exporter:${MYSQLD_EXPORTER_VERSION:-latest}
+    expose:
+      - 9104
+    ports:
+      - 9104:9104
+    command: "-config.my-cnf=/.my.cnf"
+    volumes:
+      - ./mysql/.my.cnf:/.my.cnf
+
+  # graphing
+  grafana:
+    image: grafana/grafana:${GRAFANA_VERSION:-latest}
+    expose:
+      - 3000
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+    env_file:
+      - grafana/config
+
+  mailhog:
+    image: blueimp/mailhog:${MAILHOG_VERSION:-latest}
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+  cloudwatch_exporter:
+    image: prom/cloudwatch-exporter
+    volumes:
+      - ./cloudwatch_exporter/cloudwatch_exporter.yml:/config/config.yml
+    ports:
+      - 9106:9106
+    environment:
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
