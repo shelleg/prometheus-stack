@@ -120,6 +120,16 @@ services:
       - "1025:1025"
       - "8025:8025"
 
+  cloudwatch_exporter:
+    image: prom/cloudwatch-exporter
+    volumes:
+      - ./cloudwatch_exporter/cloudwatch_exporter.yml:/config/config.yml
+    ports:
+      - 9106:9106
+    environment:
+      - AWS_ACCESS_KEY_ID=
+      - AWS_SECRET_ACCESS_KEY=
+
 #  cloudwatch-exporter:
 #    image: prom/cloudwatch-exporter
 #    ports:
