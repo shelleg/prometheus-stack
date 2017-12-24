@@ -36,7 +36,7 @@ services:
       - node-exporter
       - alertmanager
       - cadvisor
-      - mysql-exporter
+      #- mysql-exporter
 
 
   # prometheus official node-exporter
@@ -89,16 +89,40 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
 
   # mysql metrics
-  # docker run -d -p 9104:9104 --link=my_mysql_container:bdd  -e DATA_SOURCE_NAME="user:password@(bdd:3306)/database" prom/mysqld-exporter
+  #mysql-exporter:
+  # image: prom/mysqld-exporter:${MYSQLD_EXPORTER_VERSION:-latest}
+  #  expose:
+  #    - 9104
+  #  ports:
+  #    - 9104:9104
+  #  command: "-config.my-cnf=/.my.cnf"
+  #  volumes:
+  #    - ./mysql/.my.cnf:/.my.cnf
+
+  mysql:
+    image: mysql
+    ports:
+      - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "prometheus"
+      MYSQL_USER: "prometheus"
+      MYSQL_DATABASE: "db1_mysql"
+    volumes:
+      - /Users/amoss/work/tikal/prometheus/mysql/data:/var/lib/mysql
+    restart: always
+
+  #mysqld_exporter_high_res:
   mysql-exporter:
     image: prom/mysqld-exporter:${MYSQLD_EXPORTER_VERSION:-latest}
-    expose:
-      - 9104
+    environment:
+      - DATA_SOURCE_NAME=root:prometheus@(mysql:3306)/
     ports:
-      - 9104:9104
-    command: "-config.my-cnf=/.my.cnf"
-    volumes:
-      - ./mysql/.my.cnf:/.my.cnf
+      - "9104:9104"
+    #command: ["-web.listen-address=:9104", "-collect.global_status=true", "-collect.global_variables=false", "-collect.slave_status=false", "-collect.info_schema.tables=false", "-collect.binlog_size=false", "-collect.info_schema.processlist=false", "-collect.info_schema.userstats=false", "-collect.info_schema.tables=false", "-collect.auto_increment.columns=false", "-collect.info_schema.tablestats=false", "-collect.perf_schema.file_events=false", "-collect.perf_schema.eventsstatements=false", "-collect.perf_schema.indexiowaits=false", "-collect.perf_schema.tableiowaits=false", "-collect.perf_schema.tablelocks=false", "-collect.perf_schema.eventswaits=false"]
+ #   labels:
+ #     - "mon.percona.container_type=collector"
+    depends_on:
+      - mysql
 
   # graphing
   grafana:
