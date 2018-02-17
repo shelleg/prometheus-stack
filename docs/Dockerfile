@@ -20,9 +20,9 @@ RUN apt-get autoremove -y && \
 
 # Install GitBook
 WORKDIR /srv/docs
-COPY book.json /srv/docs/
 RUN npm install -g gitbook-cli
 RUN gitbook install
+COPY book.json /srv/docs/
 
 # Build
 COPY . /srv/docs/
